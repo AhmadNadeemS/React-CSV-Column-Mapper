@@ -16,12 +16,6 @@ export const HeaderSelectionStep: React.FC<HeaderSelectionStepProps> = ({
 
   return (
     <div>
-      <div style={{ marginBottom: '16px' }}>
-        <select className="csv-select" style={{ width: 'auto', display: 'inline-block' }}>
-          <option>UTF-8</option>
-        </select>
-        <button className="csv-btn csv-btn-secondary">Switch Rows/Columns</button>
-      </div>
       <div className="csv-preview-table-container">
         <table className="csv-table">
           <tbody>

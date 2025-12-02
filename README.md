@@ -22,10 +22,8 @@ React wrapper for [csv-column-mapper](https://www.npmjs.com/package/csv-column-m
 ## 📦 Installation
 
 ```bash
-npm install react-csv-mapper csv-column-mapper
+npm install react-csv-mapper
 ```
-
-> **Note**: You need to install both `react-csv-mapper` (React wrapper) and `csv-column-mapper` (core library).
 
 ## 🚀 Quick Start
 
@@ -38,8 +36,9 @@ function App() {
   return (
     <CsvMapper
       columns={[
-        { key: 'name', label: 'Full Name', required: true },
-        { key: 'email', label: 'Email', required: true }
+        { key: 'name', label: 'Full Name', required: true, default: true },
+        { key: 'email', label: 'Email', required: true, default: true },
+        { key: 'phone', label: 'Phone Number' } // Optional, not selected by default
       ]}
       onSubmit={(data) => {
         console.log('Imported data:', data);
@@ -58,8 +57,8 @@ import { useCsvMapper } from 'react-csv-mapper';
 function App() {
   const { init } = useCsvMapper({
     columns: [
-      { key: 'name', label: 'Full Name', required: true },
-      { key: 'email', label: 'Email', required: true }
+      { key: 'name', label: 'Full Name', required: true, default: true },
+      { key: 'email', label: 'Email', required: true, default: true }
     ],
     onSubmit: (data) => {
       console.log('Imported data:', data);
@@ -108,6 +107,7 @@ interface CsvColumn {
   key: string;                              // Unique identifier
   label: string;                            // Display label
   required?: boolean;                       // Is required?
+  default?: boolean;                        // Is selected by default?
   validate?: (value: string) => true | string;  // Custom validation
 }
 ```
@@ -179,8 +179,8 @@ interface UserData {
 }
 
 const columns: CsvColumn[] = [
-  { key: 'name', label: 'Full Name', required: true },
-  { key: 'email', label: 'Email', required: true },
+  { key: 'name', label: 'Full Name', required: true, default: true },
+  { key: 'email', label: 'Email', required: true, default: true },
   { key: 'phone', label: 'Phone Number' }
 ];
 
@@ -212,8 +212,8 @@ function AdvancedImport() {
 
   const { init } = useCsvMapper({
     columns: [
-      { key: 'name', label: 'Name', required: true },
-      { key: 'email', label: 'Email', required: true }
+      { key: 'name', label: 'Name', required: true, default: true },
+      { key: 'email', label: 'Email', required: true, default: true }
     ],
     onSubmit: async (data) => {
       setIsImporting(true);
@@ -241,11 +241,7 @@ function AdvancedImport() {
 }
 ```
 
-## 🔧 Setup Requirements
 
-Since this package wraps the vanilla `csv-column-mapper` library, you need to ensure the core library's script is loaded. The easiest way is to install it as a peer dependency (which happens automatically with npm install).
-
-The library will automatically detect and use the global `CsvMapper` class.
 
 ## 🌐 Browser Support
 

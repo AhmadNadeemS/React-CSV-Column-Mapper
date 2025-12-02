@@ -33,9 +33,6 @@ export const UploadStep: React.FC<UploadStepProps> = ({ onFileSelected }) => {
 
   return (
     <div>
-      <p>
-        You can use the attached sample CSV file to get started: <a href="#" id="csv-download-sample">example.csv</a>
-      </p>
       <div
         className={`csv-upload-area ${isDragOver ? 'dragover' : ''}`}
         id="csv-drop-zone"
@@ -55,9 +52,6 @@ export const UploadStep: React.FC<UploadStepProps> = ({ onFileSelected }) => {
           onChange={handleFileChange}
         />
       </div>
-      <a href="#" className="csv-paste-link" id="csv-paste-trigger">
-        Or click here to copy paste table data
-      </a>
     </div>
   );
 };

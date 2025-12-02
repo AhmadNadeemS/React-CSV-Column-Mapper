@@ -1,6 +1,6 @@
 {
   "name": "react-csv-mapper",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "React wrapper for csv-column-mapper - A powerful CSV import component with column mapping and validation",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

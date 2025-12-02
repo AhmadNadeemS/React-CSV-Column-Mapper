@@ -114,8 +114,7 @@ export const CsvMapper: React.FC<CsvMapperProps> = ({
       const invalidRows = validationResults.filter((r) => !r.isValid);
       if (invalidRows.length > 0) {
         setError(
-          `File has ${invalidRows.length} invalid row${
-            invalidRows.length > 1 ? 's' : ''
+          `File has ${invalidRows.length} invalid row${invalidRows.length > 1 ? 's' : ''
           }. Please resolve the errors before uploading.`
         );
         return;
@@ -265,10 +264,10 @@ export const CsvMapper: React.FC<CsvMapperProps> = ({
               {step === 1
                 ? 'CSV Upload'
                 : step === 2
-                ? 'Select Header Row'
-                : step === 3
-                ? 'Map Columns'
-                : 'Verify Data'}
+                  ? 'Select Header Row'
+                  : step === 3
+                    ? 'Map Columns'
+                    : 'Verify Data'}
             </h2>
             <span className="csv-mapper-close" onClick={() => setIsOpen(false)}>
               &times;

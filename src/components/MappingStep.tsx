@@ -72,7 +72,6 @@ export const MappingStep: React.FC<MappingStepProps> = ({
                 />
                 <span>
                   {field.label}
-                  {field.required ? ' *' : ''}
                 </span>
               </label>
             ))}

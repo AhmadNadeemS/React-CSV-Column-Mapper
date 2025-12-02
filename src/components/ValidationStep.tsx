@@ -43,11 +43,10 @@ export const ValidationStep: React.FC<ValidationStepProps> = ({
   return (
     <div>
       <div style={{ marginBottom: '16px' }}>
-        <button className="csv-btn csv-btn-secondary">Show all rows</button>
         <button className="csv-btn csv-btn-secondary" id="csv-export-json" onClick={onExportJson}>
           Export JSON
         </button>
-        <button className="csv-btn csv-btn-secondary" id="csv-export-csv" onClick={onExportCsv}>
+        <button className="csv-btn csv-btn-secondary" id="csv-export-csv" onClick={onExportCsv} style={{ marginLeft: '8px' }}>
           Export CSV
         </button>
       </div>
