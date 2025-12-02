@@ -1,6 +1,6 @@
 {
-  "name": "react-csv-column-mapper",
-  "version": "1.0.1",
+  "name": "react-csv-mapper",
+  "version": "1.0.2",
   "description": "React wrapper for csv-column-mapper - A powerful CSV import component with column mapping and validation",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -40,12 +40,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/AhmadNadeemS/react-csv-column-mapper.git"
+    "url": "https://github.com/AhmadNadeemS/react-csv-mapper.git"
   },
   "bugs": {
-    "url": "https://github.com/AhmadNadeemS/react-csv-column-mapper/issues"
+    "url": "https://github.com/AhmadNadeemS/react-csv-mapper/issues"
   },
-  "homepage": "https://github.com/AhmadNadeemS/react-csv-column-mapper#readme",
+  "homepage": "https://github.com/AhmadNadeemS/react-csv-mapper#readme",
   "peerDependencies": {
     "csv-column-mapper": "^1.0.0",
     "react": "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0",
@@ -61,6 +61,7 @@
     "react-dom": "^18.2.0",
     "rollup": "^4.9.0",
     "rollup-plugin-peer-deps-external": "^2.2.4",
+    "rollup-plugin-postcss": "^4.0.2",
     "tslib": "^2.6.2",
     "typescript": "^5.3.3"
   }

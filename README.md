@@ -1,6 +1,6 @@
 # React CSV Column Mapper
 
-[![npm version](https://img.shields.io/npm/v/react-csv-column-mapper.svg)](https://www.npmjs.com/package/react-csv-column-mapper)
+[![npm version](https://img.shields.io/npm/v/react-csv-mapper.svg)](https://www.npmjs.com/package/react-csv-mapper)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 React wrapper for [csv-column-mapper](https://www.npmjs.com/package/csv-column-mapper) - A powerful CSV import component with column mapping, validation, and a beautiful UI.
@@ -22,17 +22,17 @@ React wrapper for [csv-column-mapper](https://www.npmjs.com/package/csv-column-m
 ## 📦 Installation
 
 ```bash
-npm install react-csv-column-mapper csv-column-mapper
+npm install react-csv-mapper csv-column-mapper
 ```
 
-> **Note**: You need to install both `react-csv-column-mapper` (React wrapper) and `csv-column-mapper` (core library).
+> **Note**: You need to install both `react-csv-mapper` (React wrapper) and `csv-column-mapper` (core library).
 
 ## 🚀 Quick Start
 
 ### Using the Component
 
 ```tsx
-import { CsvMapper } from 'react-csv-column-mapper';
+import { CsvMapper } from 'react-csv-mapper';
 
 function App() {
   return (
@@ -53,7 +53,7 @@ function App() {
 ### Using the Hook
 
 ```tsx
-import { useCsvMapper } from 'react-csv-column-mapper';
+import { useCsvMapper } from 'react-csv-mapper';
 
 function App() {
   const { init } = useCsvMapper({
@@ -170,7 +170,7 @@ interface CsvColumn {
 ### TypeScript Usage
 
 ```tsx
-import { CsvMapper, CsvColumn } from 'react-csv-column-mapper';
+import { CsvMapper, CsvColumn } from 'react-csv-mapper';
 
 interface UserData {
   name: string;
@@ -204,7 +204,7 @@ function ImportUsers() {
 
 ```tsx
 import { useState } from 'react';
-import { useCsvMapper } from 'react-csv-column-mapper';
+import { useCsvMapper } from 'react-csv-mapper';
 
 function AdvancedImport() {
   const [importedData, setImportedData] = useState([]);
@@ -269,4 +269,3 @@ Contributions, issues and feature requests are welcome!
 ## ⭐ Show your support
 
 Give a ⭐️ if this project helped you!
-# React-CSV-Column-Mapper
