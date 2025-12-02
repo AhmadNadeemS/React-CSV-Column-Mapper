@@ -1,0 +1,45 @@
+/**
+ * Column definition for CSV mapping
+ */
+export interface CsvColumn {
+  /** Unique identifier for the column */
+  key: string;
+  /** Display label for the column */
+  label: string;
+  /** Whether the column is required */
+  required?: boolean;
+  /** Custom validation function */
+  validate?: (value: string) => true | string;
+}
+
+/**
+ * Options for the CSV mapper
+ */
+export interface CsvMapperOptions {
+  /** Array of column definitions */
+  columns: CsvColumn[];
+  /** Callback when data is submitted */
+  onSubmit: (data: Record<string, string>[]) => void;
+  /** Optional pool of available fields for dynamic selection */
+  availableFields?: CsvColumn[];
+}
+
+/**
+ * Props for the CsvMapper component
+ */
+export interface CsvMapperProps extends CsvMapperOptions {
+  /** Custom trigger element (optional) */
+  trigger?: React.ReactElement;
+  /** Container selector (defaults to 'body') */
+  container?: string;
+}
+
+/**
+ * Return type for useCsvMapper hook
+ */
+export interface UseCsvMapperReturn {
+  /** Initialize and open the CSV mapper */
+  init: () => void;
+  /** Destroy the CSV mapper instance */
+  destroy: () => void;
+}
