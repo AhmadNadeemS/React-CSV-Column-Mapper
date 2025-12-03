@@ -1,23 +1,57 @@
-# CSV Column Mapper
+# React CSV Mapper
 
 [![npm version](https://img.shields.io/npm/v/react-csv-mapper.svg)](https://www.npmjs.com/package/react-csv-mapper)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-React wrapper for [csv-column-mapper](https://www.npmjs.com/package/csv-column-mapper) - A powerful CSV import component with column mapping, validation, and a beautiful UI.
+A powerful, production-ready React CSV import component with intelligent column mapping, real-time validation, and a beautiful, themeable UI.
+
+## 🎬 Demo
+
+### Large File Upload with Pagination
+![CSV Mapper Demo - Large File Upload with Pagination](./demo-1.gif)
+
+*Seamlessly handle large CSV files with web worker-based parsing and built-in pagination*
+
+### Simple Workflow (Small Files)
+![CSV Mapper Demo - Complete Workflow](./demo.gif)
+
+*Quick import workflow for smaller CSV files (no pagination needed)*
 
 ## ✨ Features
 
-- 🎯 **React Component** - Drop-in `<CsvMapper />` component
-- 🪝 **React Hook** - `useCsvMapper()` hook for custom implementations
-- 📘 **TypeScript Support** - Full type definitions included
-- 🎨 **Customizable** - Use your own trigger buttons
-- ✅ **All Core Features** - Inherits all features from csv-column-mapper:
-  - Drag & drop upload
-  - Smart auto-mapping
-  - Inline editing
-  - Real-time validation
-  - Duplicate detection
-  - Export options
+### 🚀 Performance & Scalability
+- **Web Worker Processing** - Handle large files (100k+ rows) without blocking the UI
+- **Streaming Parser** - Memory-efficient chunk-based parsing
+- **Real-time Progress** - Live progress updates with row count and percentage
+- **Cancellable Operations** - Abort long-running imports at any time
+- **Pagination** - Built-in pagination for header selection and validation steps
+
+### 🎨 Theming & Customization
+- **18 Built-in Themes** - Choose from blue, indigo, purple, pink, red, orange, amber, yellow, lime, green, emerald, teal, cyan, sky, slate, gray, zinc, neutral, stone
+- **Custom Themes** - Pass any hex color for instant theming
+- **Custom Trigger** - Use your own button or component to trigger the mapper
+- **No Focus Rings** - Clean, modern UI without distracting outlines
+
+### 📊 Data Handling
+- **Smart Auto-mapping** - Automatically matches CSV columns to your fields
+- **Flexible Field Selection** - Define default fields and let users add more
+- **Inline Editing** - Edit cell values directly in the validation step
+- **Row Management** - Add or remove rows before import
+- **Duplicate Detection** - Automatically identifies duplicate rows
+- **Export Options** - Export validated data as JSON or CSV
+
+### ✅ Validation & Quality
+- **Real-time Validation** - Instant feedback as users map and edit data
+- **Custom Validators** - Define your own validation rules per field
+- **Required Fields** - Mark fields as required with visual indicators
+- **Error Filtering** - Toggle between all rows and error rows only
+- **Validation Summary** - Clear overview of errors and warnings
+
+### 🎯 Developer Experience
+- **React Component** - Drop-in `<CsvMapper />` component
+- **React Hook** - `useCsvMapper()` hook for custom implementations
+- **TypeScript Support** - Full type definitions included
+- **Zero Configuration** - Works out of the box with sensible defaults
 
 ## 📦 Installation
 
@@ -27,7 +61,7 @@ npm install react-csv-mapper
 
 ## 🚀 Quick Start
 
-### Using the Component
+### Basic Usage
 
 ```tsx
 import { CsvMapper } from 'react-csv-mapper';
@@ -38,36 +72,73 @@ function App() {
       columns={[
         { key: 'name', label: 'Full Name', required: true, default: true },
         { key: 'email', label: 'Email', required: true, default: true },
-        { key: 'phone', label: 'Phone Number' } // Optional, not selected by default
+        { key: 'phone', label: 'Phone Number' }
       ]}
       onSubmit={(data) => {
         console.log('Imported data:', data);
-        // Send to your API
       }}
+      theme="indigo" // Optional: Choose from 18 themes or use hex color
     />
   );
 }
 ```
 
-### Using the Hook
+### With Custom Theme
 
 ```tsx
-import { useCsvMapper } from 'react-csv-mapper';
-
-function App() {
-  const { init } = useCsvMapper({
-    columns: [
-      { key: 'name', label: 'Full Name', required: true, default: true },
-      { key: 'email', label: 'Email', required: true, default: true }
-    ],
-    onSubmit: (data) => {
-      console.log('Imported data:', data);
-    }
-  });
-
-  return <button onClick={init}>Import CSV</button>;
-}
+<CsvMapper
+  columns={[...]}
+  onSubmit={(data) => console.log(data)}
+  theme="emerald" // Named theme
+  // OR
+  theme="#0066ff" // Custom hex color
+/>
 ```
+
+### With Custom Trigger Button
+
+```tsx
+<CsvMapper
+  columns={[...]}
+  onSubmit={(data) => console.log(data)}
+  theme="blue"
+  trigger={
+    <button className="my-custom-button">
+      📊 Import CSV
+    </button>
+  }
+/>
+```
+
+## 🎨 Theming
+
+The component supports 18 built-in color themes with TypeScript autocomplete:
+
+```tsx
+type ThemeColor =
+  | 'blue' | 'indigo' | 'purple' | 'pink'
+  | 'red' | 'orange' | 'amber' | 'yellow'
+  | 'lime' | 'green' | 'emerald' | 'teal'
+  | 'cyan' | 'sky' | 'slate' | 'gray'
+  | 'zinc' | 'neutral' | 'stone';
+
+<CsvMapper theme="indigo" ... />
+```
+
+Or use any custom hex color:
+
+```tsx
+<CsvMapper theme="#7c3aed" ... />
+```
+
+The theme automatically applies to:
+- Primary buttons (Next, Submit)
+- Links and interactive text
+- Selected header rows
+- Radio buttons and checkboxes
+- Progress bars
+- Borders on focus
+- Active pagination buttons
 
 ## 📖 API Reference
 
@@ -77,28 +148,10 @@ function App() {
 |------|------|----------|-------------|
 | `columns` | `CsvColumn[]` | ✅ Yes | Array of column definitions |
 | `onSubmit` | `(data: Record<string, string>[]) => void` | ✅ Yes | Callback when data is submitted |
+| `theme` | `ThemeColor \| string` | ❌ No | Theme color (named or hex) |
 | `trigger` | `React.ReactElement` | ❌ No | Custom trigger button |
 | `container` | `string` | ❌ No | Container selector (default: 'body') |
 | `availableFields` | `CsvColumn[]` | ❌ No | Pool of fields for dynamic selection |
-
-### `useCsvMapper()` Hook
-
-**Parameters:**
-```typescript
-{
-  columns: CsvColumn[];
-  onSubmit: (data: Record<string, string>[]) => void;
-  availableFields?: CsvColumn[];
-}
-```
-
-**Returns:**
-```typescript
-{
-  init: () => void;      // Open the CSV mapper
-  destroy: () => void;   // Cleanup the mapper
-}
-```
 
 ### Column Definition
 
@@ -112,23 +165,23 @@ interface CsvColumn {
 }
 ```
 
-## 💡 Examples
-
-### With Custom Trigger Button
+### `useCsvMapper()` Hook
 
 ```tsx
-<CsvMapper
-  columns={[...]}
-  onSubmit={(data) => console.log(data)}
-  trigger={
-    <button className="my-custom-button">
-      📊 Import Data
-    </button>
-  }
-/>
+import { useCsvMapper } from 'react-csv-mapper';
+
+const { init, destroy } = useCsvMapper({
+  columns: [...],
+  onSubmit: (data) => console.log(data)
+});
+
+// Open mapper
+<button onClick={init}>Import CSV</button>
 ```
 
-### With Custom Validation
+## 💡 Advanced Examples
+
+### Custom Validation
 
 ```tsx
 <CsvMapper
@@ -153,24 +206,44 @@ interface CsvColumn {
     }
   ]}
   onSubmit={async (data) => {
-    // Send to API
-    const response = await fetch('/api/import', {
+    await fetch('/api/import', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     });
-
-    if (response.ok) {
-      alert('Data imported successfully!');
-    }
   }}
+  theme="purple"
+/>
+```
+
+### Dynamic Field Selection
+
+```tsx
+// Define all possible fields
+const allFields = [
+  { key: 'firstName', label: 'First Name', default: true },
+  { key: 'lastName', label: 'Last Name', default: true },
+  { key: 'email', label: 'Email', required: true, default: true },
+  { key: 'phone', label: 'Phone' },
+  { key: 'company', label: 'Company' },
+  { key: 'title', label: 'Job Title' },
+  { key: 'address', label: 'Address' },
+  { key: 'city', label: 'City' },
+  { key: 'country', label: 'Country' }
+];
+
+// Users can select which fields to import
+<CsvMapper
+  columns={allFields}
+  onSubmit={(data) => console.log(data)}
+  theme="teal"
 />
 ```
 
 ### TypeScript Usage
 
 ```tsx
-import { CsvMapper, CsvColumn } from 'react-csv-mapper';
+import { CsvMapper, CsvColumn, ThemeColor } from 'react-csv-mapper';
 
 interface UserData {
   name: string;
@@ -184,9 +257,10 @@ const columns: CsvColumn[] = [
   { key: 'phone', label: 'Phone Number' }
 ];
 
+const theme: ThemeColor = 'indigo';
+
 function ImportUsers() {
   const handleSubmit = (data: Record<string, string>[]) => {
-    // TypeScript knows the structure
     const users: UserData[] = data.map(row => ({
       name: row.name,
       email: row.email,
@@ -196,52 +270,17 @@ function ImportUsers() {
     console.log(users);
   };
 
-  return <CsvMapper columns={columns} onSubmit={handleSubmit} />;
+  return <CsvMapper columns={columns} onSubmit={handleSubmit} theme={theme} />;
 }
 ```
 
-### Advanced: Using the Hook with State
+## 🔧 How It Works
 
-```tsx
-import { useState } from 'react';
-import { useCsvMapper } from 'react-csv-mapper';
-
-function AdvancedImport() {
-  const [importedData, setImportedData] = useState([]);
-  const [isImporting, setIsImporting] = useState(false);
-
-  const { init } = useCsvMapper({
-    columns: [
-      { key: 'name', label: 'Name', required: true, default: true },
-      { key: 'email', label: 'Email', required: true, default: true }
-    ],
-    onSubmit: async (data) => {
-      setIsImporting(true);
-      try {
-        // Process data
-        await processImport(data);
-        setImportedData(data);
-      } finally {
-        setIsImporting(false);
-      }
-    }
-  });
-
-  return (
-    <div>
-      <button onClick={init} disabled={isImporting}>
-        {isImporting ? 'Importing...' : 'Import CSV'}
-      </button>
-
-      {importedData.length > 0 && (
-        <p>Imported {importedData.length} records</p>
-      )}
-    </div>
-  );
-}
-```
-
-
+1. **Upload** - Drag & drop or paste CSV data
+2. **Select Header** - Choose which row contains column headers (with pagination for large files)
+3. **Map Columns** - Auto-mapped or manually map CSV columns to your fields
+4. **Validate & Edit** - Review data, fix errors, add/remove rows (paginated view)
+5. **Submit** - Clean, validated data ready for your API
 
 ## 🌐 Browser Support
 
@@ -250,13 +289,11 @@ function AdvancedImport() {
 - ✅ Safari (latest)
 - ✅ Edge (latest)
 
+Requires Web Worker support for large file processing.
+
 ## 📄 License
 
 MIT © Ahmad Nadeem
-
-## 🔗 Related Packages
-
-- [csv-column-mapper](https://www.npmjs.com/package/csv-column-mapper) - Core vanilla JS library
 
 ## 🤝 Contributing
 

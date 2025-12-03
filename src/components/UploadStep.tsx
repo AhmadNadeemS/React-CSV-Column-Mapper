@@ -4,9 +4,10 @@ interface UploadStepProps {
   onFileSelected: (file: File) => void;
   onDataPasted?: (data: string, delimiter?: string) => void;
   isLoading?: boolean;
+  progress?: { percent: number; rowsParsed: number };
 }
 
-export const UploadStep: React.FC<UploadStepProps> = ({ onFileSelected, onDataPasted, isLoading = false }) => {
+export const UploadStep: React.FC<UploadStepProps> = ({ onFileSelected, onDataPasted, isLoading = false, progress }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [viewMode, setViewMode] = useState<'upload' | 'paste'>('upload');
@@ -97,7 +98,6 @@ export const UploadStep: React.FC<UploadStepProps> = ({ onFileSelected, onDataPa
 
   return (
     <div style={{
-      position: 'relative',
       maxWidth: '700px',
       margin: '0 auto',
       display: 'flex',
@@ -116,7 +116,8 @@ export const UploadStep: React.FC<UploadStepProps> = ({ onFileSelected, onDataPa
         style={{
           opacity: isLoading ? 0.6 : 1,
           pointerEvents: isLoading ? 'none' : 'auto',
-          width: '100%'
+          width: '100%',
+          position: 'relative'
         }}
       >
         <div className="csv-upload-text">Drop files here or click to upload</div>
@@ -130,12 +131,39 @@ export const UploadStep: React.FC<UploadStepProps> = ({ onFileSelected, onDataPa
           onChange={handleFileChange}
           disabled={isLoading}
         />
+
+        {isLoading && (
+          <div className="csv-loading-overlay">
+            <div className="csv-loading-spinner"></div>
+            <div className="csv-loading-text">Processing your file...</div>
+            {progress && progress.percent > 0 && (
+              <>
+                <div className="csv-progress-bar" style={{ marginTop: '16px', width: '80%', maxWidth: '300px' }}>
+                  <div
+                    className="csv-progress-fill csv-progress-fill-bar"
+                    style={{
+                      width: `${progress.percent}%`,
+                      height: '8px'
+                    }}
+                  ></div>
+                </div>
+                <div className="csv-loading-subtext" style={{ marginTop: '8px' }}>
+                  {progress.percent}% • {progress.rowsParsed.toLocaleString()} rows
+                </div>
+              </>
+            )}
+            {(!progress || progress.percent === 0) && (
+              <div className="csv-loading-subtext">This may take a moment for large files</div>
+            )}
+          </div>
+        )}
       </div>
 
       <div style={{ marginTop: '16px', textAlign: 'center' }}>
         <a
           href="#"
-          style={{ fontSize: '14px', color: '#0066ff', textDecoration: 'none' }}
+          className="csv-paste-data-link"
+          style={{textDecoration: 'none'}}
           onClick={(e) => {
             e.preventDefault();
             if (!isLoading) setViewMode('paste');
@@ -144,14 +172,6 @@ export const UploadStep: React.FC<UploadStepProps> = ({ onFileSelected, onDataPa
           Or click here to copy paste table data
         </a>
       </div>
-
-      {isLoading && (
-        <div className="csv-loading-overlay">
-          <div className="csv-loading-spinner"></div>
-          <div className="csv-loading-text">Processing your file...</div>
-          <div className="csv-loading-subtext">This may take a moment for large files</div>
-        </div>
-      )}
     </div>
   );
 };

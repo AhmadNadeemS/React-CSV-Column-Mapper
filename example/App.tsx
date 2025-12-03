@@ -1,4 +1,3 @@
-import React from 'react';
 import { CsvMapper, CsvColumn } from '../src';
 
 export default function App() {
@@ -34,7 +33,7 @@ export default function App() {
       textAlign: 'center'
     }}>
       <h1 style={{ color: '#333', marginBottom: '30px' }}>
-        React CSV Column Mapper
+        React CSV Mapper
       </h1>
 
       <div style={{
@@ -50,6 +49,7 @@ export default function App() {
         <CsvMapper
           columns={allFields}
           onSubmit={handleSubmit}
+          theme="blue"
           trigger={
             <button
               style={{

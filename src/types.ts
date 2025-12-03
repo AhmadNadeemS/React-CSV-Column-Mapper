@@ -27,6 +27,16 @@ export interface CsvMapperOptions {
 }
 
 /**
+ * Available theme color names
+ */
+export type ThemeColor =
+  | 'blue' | 'indigo' | 'purple' | 'pink'
+  | 'red' | 'orange' | 'amber' | 'yellow'
+  | 'lime' | 'green' | 'emerald' | 'teal'
+  | 'cyan' | 'sky' | 'slate' | 'gray'
+  | 'zinc' | 'neutral' | 'stone';
+
+/**
  * Props for the CsvMapper component
  */
 export interface CsvMapperProps extends CsvMapperOptions {
@@ -34,6 +44,8 @@ export interface CsvMapperProps extends CsvMapperOptions {
   trigger?: React.ReactElement;
   /** Container selector (defaults to 'body') */
   container?: string;
+  /** Primary theme color - named color or hex code */
+  theme?: ThemeColor | string;
 }
 
 /**

@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { CsvMapperProps, CsvColumn } from './types';
 import { CsvParser } from './utils/CsvParser';
 import { Validator, ValidationResult } from './utils/Validator';
+import { generateThemeColors } from './utils/colorUtils';
 import { UploadStep } from './components/UploadStep';
 import { HeaderSelectionStep } from './components/HeaderSelectionStep';
 import { MappingStep } from './components/MappingStep';
@@ -15,6 +16,7 @@ export const CsvMapper: React.FC<CsvMapperProps> = ({
   availableFields: propAvailableFields,
   trigger,
   container = 'body',
+  theme,
 }) => {
   // Determine active columns and available fields
   const { activeColumns, allAvailableFields } = useMemo(() => {
@@ -48,6 +50,8 @@ export const CsvMapper: React.FC<CsvMapperProps> = ({
   const [validationResults, setValidationResults] = useState<ValidationResult[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [abortController, setAbortController] = useState<AbortController | null>(null);
+  const [parseProgress, setParseProgress] = useState<{ percent: number; rowsParsed: number }>({ percent: 0, rowsParsed: 0 });
 
   const parser = useMemo(() => new CsvParser(), []);
   const validator = useMemo(() => new Validator(columns), [columns]);
@@ -68,34 +72,64 @@ export const CsvMapper: React.FC<CsvMapperProps> = ({
 
 
   const handleFileSelected = async (file: File) => {
+    const controller = new AbortController();
+    setAbortController(controller);
     setIsLoading(true);
+    setParseProgress({ percent: 0, rowsParsed: 0 });
+    const lastUpdateRef = { current: 0 };
     try {
-      const rows = await parser.parse(file);
+      const rows = await parser.parse(file, {}, controller.signal, (progress) => {
+        const now = Date.now();
+        // Throttle updates to every 100ms or if complete
+        if (now - lastUpdateRef.current > 100 || progress.percent === 100) {
+          setParseProgress(progress);
+          lastUpdateRef.current = now;
+        }
+      });
       setRawRows(rows);
       setStep(2);
       setHeaderRowIndex(0);
       setError(null);
-    } catch (err) {
-      console.error('Parse error', err);
-      setError('Error parsing file. Please check the file format and try again.');
+    } catch (err: any) {
+      // Don't show error if user cancelled
+      if (err.name !== 'AbortError') {
+        console.error('Parse error', err);
+        setError('Error parsing file. Please check the file format and try again.');
+      }
     } finally {
       setIsLoading(false);
+      setAbortController(null);
+      setParseProgress({ percent: 0, rowsParsed: 0 });
     }
   };
 
   const handleDataPasted = async (data: string, delimiter: string = ',') => {
+    const controller = new AbortController();
+    setAbortController(controller);
     setIsLoading(true);
+    const lastUpdateRef = { current: 0 };
     try {
-      const rows = await parser.parse(data, { delimiter });
+      const rows = await parser.parse(data, { delimiter }, controller.signal, (progress) => {
+        const now = Date.now();
+        if (now - lastUpdateRef.current > 100 || progress.percent === 100) {
+          setParseProgress(progress);
+          lastUpdateRef.current = now;
+        }
+      });
       setRawRows(rows);
       setStep(2);
       setHeaderRowIndex(0);
       setError(null);
-    } catch (err) {
-      console.error('Parse error', err);
-      setError('Error parsing pasted data. Please check the format and try again.');
+    } catch (err: any) {
+      // Don't show error if user cancelled
+      if (err.name !== 'AbortError') {
+        console.error('Parse error', err);
+        setError('Error parsing pasted data. Please check the format and try again.');
+      }
     } finally {
       setIsLoading(false);
+      setAbortController(null);
+      setParseProgress({ percent: 0, rowsParsed: 0 });
     }
   };
 
@@ -238,7 +272,7 @@ export const CsvMapper: React.FC<CsvMapperProps> = ({
   const renderStep = () => {
     switch (step) {
       case 1:
-        return <UploadStep onFileSelected={handleFileSelected} onDataPasted={handleDataPasted} isLoading={isLoading} />;
+        return <UploadStep onFileSelected={handleFileSelected} onDataPasted={handleDataPasted} isLoading={isLoading} progress={parseProgress} />;
       case 2:
         return (
           <HeaderSelectionStep
@@ -277,8 +311,18 @@ export const CsvMapper: React.FC<CsvMapperProps> = ({
   const renderModal = () => {
     if (!isOpen) return null;
 
+    // Generate theme colors if theme prop is provided
+    const themeColors = theme ? generateThemeColors(theme) : null;
+    console.log('CsvMapper Theme Debug:', { theme, themeColors });
+    const themeStyle = themeColors ? {
+      '--csv-primary': themeColors.primary,
+      '--csv-primary-hover': themeColors.primaryHover,
+      '--csv-primary-light': themeColors.primaryLight,
+      '--csv-primary-dark': themeColors.primaryDark,
+    } as React.CSSProperties : {};
+
     const modalContent = (
-      <div className="csv-mapper-overlay">
+      <div className="csv-mapper-overlay" style={themeStyle}>
         <div className="csv-mapper-modal">
           <div className="csv-mapper-header">
             <h2 id="csv-step-title">
@@ -290,7 +334,12 @@ export const CsvMapper: React.FC<CsvMapperProps> = ({
                     ? 'Map Columns'
                     : 'Verify Data'}
             </h2>
-            <span className="csv-mapper-close" onClick={() => setIsOpen(false)}>
+            <span className="csv-mapper-close" onClick={() => {
+              if (abortController) {
+                abortController.abort();
+              }
+              setIsOpen(false);
+            }}>
               &times;
             </span>
           </div>
@@ -303,7 +352,7 @@ export const CsvMapper: React.FC<CsvMapperProps> = ({
               <span id="csv-status-text"></span>
             </div>
             <div className="csv-footer-right">
-              {step > 1 && (
+              {step > 1 && !isLoading && (
                 <button
                   className="csv-btn csv-btn-secondary"
                   id="csv-prev-btn"
@@ -312,7 +361,7 @@ export const CsvMapper: React.FC<CsvMapperProps> = ({
                   Prev
                 </button>
               )}
-              {step < 4 && step > 1 && (
+              {step < 4 && step > 1 && !isLoading && (
                 <button
                   className="csv-btn csv-btn-primary"
                   id="csv-next-btn"
@@ -321,7 +370,7 @@ export const CsvMapper: React.FC<CsvMapperProps> = ({
                   Next
                 </button>
               )}
-              {step === 4 && (
+              {step === 4 && !isLoading && (
                 <button
                   className="csv-btn csv-btn-primary"
                   id="csv-next-btn"
@@ -330,10 +379,26 @@ export const CsvMapper: React.FC<CsvMapperProps> = ({
                   Submit
                 </button>
               )}
+              {isLoading && abortController && (
+                <button
+                  className="csv-btn csv-btn-danger"
+                  id="csv-cancel-btn"
+                  onClick={() => {
+                    abortController.abort();
+                  }}
+                >
+                  Cancel
+                </button>
+              )}
               <button
                 className="csv-btn csv-btn-secondary"
                 id="csv-close-btn"
-                onClick={() => setIsOpen(false)}
+                onClick={() => {
+                  if (abortController) {
+                    abortController.abort();
+                  }
+                  setIsOpen(false);
+                }}
               >
                 Close
               </button>

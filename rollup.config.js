@@ -3,6 +3,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
 import peerDepsExternal from 'rollup-plugin-peer-deps-external';
 import postcss from 'rollup-plugin-postcss';
+import webWorkerLoader from 'rollup-plugin-web-worker-loader';
 
 export default {
   input: 'src/index.ts',
@@ -27,6 +28,10 @@ export default {
     postcss({
       inject: true,
       minimize: true
+    }),
+    webWorkerLoader({
+      targetPlatform: 'browser',
+      extensions: ['.ts']
     }),
     typescript({
       tsconfig: './tsconfig.json',
