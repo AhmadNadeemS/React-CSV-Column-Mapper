@@ -8,12 +8,12 @@ A powerful, production-ready React CSV import component with intelligent column 
 ## 🎬 Demo
 
 ### Large File Upload with Pagination
-![CSV Mapper Demo - Large File Upload with Pagination](https://github.com/AhmadNadeemS/react-csv-mapper/raw/main/demo-1.gif)
+![CSV Mapper Demo - Large File Upload with Pagination](https://github.com/AhmadNadeemS/react-csv-mapper/raw/main/assets/demo-1.gif)
 
 *Seamlessly handle large CSV files with web worker-based parsing and built-in pagination*
 
 ### Simple Workflow (Small Files)
-![CSV Mapper Demo - Complete Workflow](https://github.com/AhmadNadeemS/react-csv-mapper/raw/main/demo.gif)
+![CSV Mapper Demo - Complete Workflow](https://github.com/AhmadNadeemS/react-csv-mapper/raw/main/assets/demo.gif)
 
 *Quick import workflow for smaller CSV files (no pagination needed)*
 
